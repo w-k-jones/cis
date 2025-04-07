@@ -115,7 +115,7 @@ class Metadata(object):
         if standard_name is None or standard_name in STD_NAMES:
             # If the standard name is actually changing from one to another then log the fact
             if self.standard_name is not None \
-                    and self.standard_name.strip() is not "" \
+                    and self.standard_name.strip() != "" \
                     and self.standard_name != standard_name:
                 logging.debug("Changing standard name for dataset from '{}' to '{}'".format(self.standard_name,
                                                                                             standard_name))
@@ -1201,7 +1201,7 @@ def _to_flat_ndarray(data, copy=True):
             raise ValueError("Masked arrays must always be copied.")
         # We need to cast the array to a float so that we can fill the array with NaNs for Pandas (which would do the
         #  same trick itself anyway)
-        ndarr = data.astype(np.float64).filled(np.NaN).flatten()
+        ndarr = data.astype(float).filled(np.NaN).flatten()
     elif copy:
         ndarr = data.flatten()
     else:
@@ -1245,7 +1245,10 @@ def _ungridded_sampled_from(sample, data, how='', kernel=None, missing_data_for_
                                             var_units=var_units,
                                             missing_data_for_missing_sample=missing_data_for_missing_sample)
         con = None
-        kernel = 'lin'
+        if how not in ['', 'lin', 'nn']:
+            raise ValueError("Invalid method specified for gridded -> ungridded collocation: " + how)
+
+        kernel = how or 'lin'
     else:
         raise ValueError("Invalid argument, data must be either GriddedData or UngriddedData")
 

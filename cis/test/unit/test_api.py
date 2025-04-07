@@ -6,7 +6,7 @@ from nose.tools import assert_raises
 from cis.test.util.mock import make_mock_cube, make_regular_2d_ungridded_data
 from cis.data_io.gridded_data import make_from_cube
 import numpy as np
-from numpy.testing.utils import assert_array_almost_equal
+from numpy.testing import assert_array_almost_equal
 
 
 class TestAPI(TestCase):
@@ -93,6 +93,10 @@ class TestAPI(TestCase):
         assert res == res_1
         # This dataset should still be the same as the alternative one (this checks data and metadata)
         assert self.ug == self.ug_1
+
+    def test_basic_gridded_to_ungridded_collocation_invalid_method(self):
+        with assert_raises(ValueError):
+            self.gd.collocated_onto(self.ug, how='blah')
 
     def test_basic_ungridded_to_ungridded_collocation(self):
         res = self.ug.collocated_onto(self.ug_1)

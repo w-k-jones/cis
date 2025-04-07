@@ -1,4 +1,4 @@
-import collections
+import collections.abc
 import re
 import logging
 import warnings
@@ -198,7 +198,7 @@ def get_coord(data_object, variable, data):
     Find a specified coord
 
     :param data_object:
-    :param variable: 
+    :param variable:
     :param data:
     :return:
     """
@@ -319,7 +319,7 @@ def haversine(lat, lon, lat2, lon2):
     return arclen * R_E
 
 
-class OrderedSet(collections.MutableSet):
+class OrderedSet(collections.abc.MutableSet):
     """
     From http://code.activestate.com/recipes/576694/
     """
@@ -659,7 +659,8 @@ def listify(item):
     :param item: Item which may or may not be a list
     :return: List
     """
-    if isinstance(item, tuple):
+    from types import GeneratorType
+    if isinstance(item, (tuple, GeneratorType)):
         return list(item)
     if not isinstance(item, list):
         return [item]

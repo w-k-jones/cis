@@ -157,7 +157,7 @@ def convert_time_using_time_stamp_info_to_std_time(time_array, units, time_stamp
     """
     from cf_units import Unit
     units = str(units).split()
-    if len(units) is 0:
+    if len(units) == 0:
         raise ValueError("Units is empty when converting time")
 
     units_in_since_form = Unit(units[0] + " since " + time_stamp_info)
@@ -179,7 +179,7 @@ def convert_sec_since_to_std_time(seconds, ref):
     import numpy as np
     # Don't copy the array if this is a standard numpy array, unfortunately masked arrays don't have this option
     kwargs = {} if isinstance(seconds, np.ma.MaskedArray) else {'copy': False}
-    days_since = seconds.astype('float64', **kwargs) / (3600*24.0)
+    days_since = seconds.astype(float, **kwargs) / (3600*24.0)
     offset = ref - cis_standard_time_unit.num2date(0)
     return offset.days + days_since
 
@@ -202,8 +202,7 @@ def convert_julian_date_to_std_time(days_since):
     :param days_since: numpy array of fractional days since 12:00 January 1, 4713 BC
     :return: fractional days since cis standard time
     """
-    from cf_units import date2julian_day
-    offset = date2julian_day(cis_standard_time_unit.num2date(0), 'standard')
+    offset = cis_standard_time_unit.num2date(0).toordinal(fractional=True)
     return days_since - offset
 
 
